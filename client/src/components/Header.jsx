@@ -2,11 +2,12 @@ import { FaRegPaperPlane } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useCustomerState } from "../Context";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Header = () => {
   const [dropdown, setDropdown] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
   const {
     state: { user },
     dispatch,
@@ -19,6 +20,21 @@ const Header = () => {
       type: "REMOVE_USER",
     });
   };
+
+  useEffect(() => {
+    const closeDorpdown = (e) => {
+      console.log(dropdownRef.current);
+      console.log(e.target);
+      console.log(dropdownRef.current.contains(e.target));
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdown(false);
+      }
+    };
+    document.addEventListener("click", closeDorpdown);
+
+    return () => document.removeEventListener("click", closeDorpdown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getUserName = () => {
     if (user) {
@@ -100,7 +116,9 @@ const Header = () => {
       </div>
 
       <div className="flex items-center justify-between md:hidden relative xs:flex-col xs:justify-center xs:gap-2">
-        <div
+        <button
+          type="button"
+          ref={dropdownRef}
           className="cursor-pointer hover:text-red-400 xs:hidden"
           onClick={() => setDropdown(!dropdown)}>
           <svg
@@ -109,14 +127,14 @@ const Header = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-8 h-8">
+            className="w-9 h-9">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
             />
           </svg>
-        </div>
+        </button>
         <div className="hidden xs:flex xs:order-2">
           <Link
             to={"/"}
