@@ -23,9 +23,6 @@ const Header = () => {
 
   useEffect(() => {
     const closeDorpdown = (e) => {
-      console.log(dropdownRef.current);
-      console.log(e.target);
-      console.log(dropdownRef.current.contains(e.target));
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdown(false);
       }
